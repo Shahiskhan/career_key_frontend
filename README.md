@@ -76,7 +76,7 @@ The **Login Page** allows three types of users to access the system:
 ---
 
 ### 🏛️ HEC Portal
-![HEC Portal](src/assets/screenshots/hecPortal.png)  
+![HEC Portal](.src/assets/screenshots/hecPortal.png)  
 The **HEC Portal** dashboard allows administrative tasks including:  
 - University management and approvals  
 - Degree verification oversight  
@@ -86,7 +86,7 @@ The **HEC Portal** dashboard allows administrative tasks including:
 ---
 
 ### 🎓 University Portal
-![University Portal](src/assets/screenshots/uniPortal.png)  
+![University Portal](.src/assets/screenshots/uniPortal.png)  
 The **University Portal** provides:  
 - Student record management  
 - Verification request handling  
