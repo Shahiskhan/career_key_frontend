@@ -95,7 +95,8 @@ The **University Portal** provides:
 ---
 
 ### 👨‍🎓 Student Portal
-![Student Portal](https://raw.githubusercontent.com/Shahiskhan/career_key_frontend1/main/src/assets/screeshots/StudentPortal (1).png)
+![Student Portal](https://raw.githubusercontent.com/Shahiskhan/career_key_frontend1/main/src/assets/screeshots/StudentPortal.png)
+
 The **Student Portal** is the main interface for students to:  
 - Submit degrees for blockchain verification  
 - Track the status of attestation requests  
