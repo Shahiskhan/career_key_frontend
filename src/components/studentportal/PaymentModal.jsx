@@ -3,6 +3,7 @@ import React, { useState } from "react";
 const PaymentModal = ({ isOpen, onClose, onPaymentSubmit, amount = 500 }) => {
     const [paymentMethod, setPaymentMethod] = useState("jazzcash");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [trxId, setTrxId] = useState("");
     const [errors, setErrors] = useState({});
     const [isProcessing, setIsProcessing] = useState(false);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -31,6 +32,9 @@ const PaymentModal = ({ isOpen, onClose, onPaymentSubmit, amount = 500 }) => {
         } else if (!/^(\+92|92|0)?3\d{9}$/.test(phoneNumber.replace(/[-\s]/g, ""))) {
             newErrors.phoneNumber = "Enter a valid Pakistani phone number";
         }
+        if (!trxId.trim()) {
+            newErrors.trxId = "Transaction ID is required";
+        }
         return newErrors;
     };
 
@@ -56,6 +60,7 @@ const PaymentModal = ({ isOpen, onClose, onPaymentSubmit, amount = 500 }) => {
                 onPaymentSubmit({
                     method: paymentMethod,
                     phoneNumber,
+                    trxId,
                     amount,
                     timestamp: new Date().toLocaleString()
                 });
@@ -66,6 +71,7 @@ const PaymentModal = ({ isOpen, onClose, onPaymentSubmit, amount = 500 }) => {
 
     const resetForm = () => {
         setPhoneNumber("");
+        setTrxId("");
         setErrors({});
         setPaymentSuccess(false);
         onClose();
@@ -197,6 +203,21 @@ const PaymentModal = ({ isOpen, onClose, onPaymentSubmit, amount = 500 }) => {
                                     className={`w-full px-4 py-3 border ${errors.phoneNumber ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500`}
                                 />
                                 {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">Transaction ID (Trx ID) *</label>
+                                <input
+                                    type="text"
+                                    value={trxId}
+                                    onChange={(e) => {
+                                        setTrxId(e.target.value);
+                                        if (errors.trxId) setErrors({ ...errors, trxId: "" });
+                                    }}
+                                    placeholder="Enter Transaction ID received from SMS"
+                                    className={`w-full px-4 py-3 border ${errors.trxId ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500`}
+                                />
+                                {errors.trxId && <p className="text-red-500 text-sm mt-1">{errors.trxId}</p>}
                             </div>
 
                             {/* Amount Display */}

@@ -12,10 +12,10 @@ const StatCard = ({ icon, title, value, color }) => (
 
 const DashboardStats = ({ stats }) => (
     <section className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-        <StatCard icon="📄" title="Total Documents" value={stats.documents} color="bg-blue-50" />
-        <StatCard icon="✅" title="Verified Documents" value={stats.verified} color="bg-green-50" />
-        <StatCard icon="⏳" title="Pending Requests" value={stats.pending} color="bg-yellow-50" />
-        <StatCard icon="💼" title="Job Matches" value={stats.jobs} color="bg-purple-50" />
+        <StatCard icon="📄" title="Total Documents" value={stats.documents} color="bg-emerald-50 hover:bg-emerald-100" />
+        <StatCard icon="✅" title="Verified Documents" value={stats.verified} color="bg-green-50 hover:bg-green-100" />
+        <StatCard icon="⏳" title="Pending Requests" value={stats.pending} color="bg-amber-50 hover:bg-amber-100" />
+        <StatCard icon="💼" title="Job Matches" value={stats.jobs} color="bg-teal-50 hover:bg-teal-100" />
     </section>
 );
 

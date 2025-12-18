@@ -3,12 +3,22 @@ import StudentNavbar from "../components/studentportal/StudentNavbar";
 
 const ProfilePage = ({ onNavigate }) => {
     const [isEditing, setIsEditing] = useState(false);
+
+    // Load initial data from localStorage or use defaults
+    const storedName = localStorage.getItem("studentName");
+    const storedEmail = localStorage.getItem("studentEmail");
+    const storedRollNo = localStorage.getItem("studentRollNo");
+    const storedCnic = localStorage.getItem("studentCnic");
+    const storedUniversity = localStorage.getItem("studentUniversity");
+    const storedDegree = localStorage.getItem("studentDegree");
+
     const [profile, setProfile] = useState({
-        name: "Muhammad Shahis",
-        rollNo: "BCS-F22-E02",
-        cnic: "12345-1234567-1",
-        university: "University of Mianwali",
-        degree: "BS Computer Science"
+        name: storedName || "Muhammad Shahis",
+        email: storedEmail || "shahis@example.com",
+        rollNo: storedRollNo || "",
+        cnic: storedCnic || "",
+        university: storedUniversity || "",
+        degree: storedDegree || ""
     });
 
     const [editData, setEditData] = useState({
@@ -112,11 +122,21 @@ const ProfilePage = ({ onNavigate }) => {
     const handleSaveProfile = () => {
         setProfile({
             name: editData.name,
+            email: editData.email,
             rollNo: editData.rollNo,
             cnic: editData.cnic,
             university: editData.university,
             degree: editData.degree
         });
+
+        // Update localStorage as well to persist changes
+        localStorage.setItem("studentName", editData.name);
+        localStorage.setItem("studentEmail", editData.email);
+        localStorage.setItem("studentRollNo", editData.rollNo);
+        localStorage.setItem("studentCnic", editData.cnic);
+        localStorage.setItem("studentUniversity", editData.university);
+        localStorage.setItem("studentDegree", editData.degree);
+
         alert("Profile updated successfully!");
         setIsEditing(false);
     };
@@ -136,8 +156,10 @@ const ProfilePage = ({ onNavigate }) => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-green-50">
-            <StudentNavbar activeSection="profile" onNavigate={onNavigate} />
+        <div className="min-h-screen bg-gradient-to-br from-white via-emerald-50 to-green-50">
+            <div className="container mx-auto px-4 pt-6">
+                <StudentNavbar activeSection="profile" onNavigate={onNavigate} />
+            </div>
 
             <div className="container mx-auto px-4 py-8">
                 <div className="mb-8">
@@ -147,33 +169,37 @@ const ProfilePage = ({ onNavigate }) => {
 
                 {!isEditing ? (
                     // View Mode
-                    <section className="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl p-10 mb-10">
+                    <section className="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl p-10 mb-10 border border-emerald-100">
                         <h3 className="text-3xl font-bold mb-6 text-gray-900 text-center">Profile Information</h3>
                         <div className="space-y-4">
-                            <div className="flex justify-between border-b pb-3">
+                            <div className="flex justify-between border-b pb-3 border-emerald-100">
                                 <span className="font-medium text-gray-600">Name:</span>
                                 <span className="font-semibold text-gray-800">{profile.name}</span>
                             </div>
-                            <div className="flex justify-between border-b pb-3">
+                            <div className="flex justify-between border-b pb-3 border-emerald-100">
+                                <span className="font-medium text-gray-600">Email:</span>
+                                <span className="font-semibold text-gray-800">{profile.email}</span>
+                            </div>
+                            <div className="flex justify-between border-b pb-3 border-emerald-100">
                                 <span className="font-medium text-gray-600">Roll Number:</span>
                                 <span className="font-semibold text-gray-800">{profile.rollNo}</span>
                             </div>
-                            <div className="flex justify-between border-b pb-3">
+                            <div className="flex justify-between border-b pb-3 border-emerald-100">
                                 <span className="font-medium text-gray-600">CNIC:</span>
                                 <span className="font-semibold text-gray-800">{profile.cnic}</span>
                             </div>
-                            <div className="flex justify-between border-b pb-3">
+                            <div className="flex justify-between border-b pb-3 border-emerald-100">
                                 <span className="font-medium text-gray-600">University:</span>
                                 <span className="font-semibold text-gray-800">{profile.university}</span>
                             </div>
-                            <div className="flex justify-between border-b pb-3">
+                            <div className="flex justify-between border-b pb-3 border-emerald-100">
                                 <span className="font-medium text-gray-600">Degree:</span>
                                 <span className="font-semibold text-gray-800">{profile.degree}</span>
                             </div>
                         </div>
                         <button
                             onClick={handleEditClick}
-                            className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition"
+                            className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition hover:from-emerald-700 hover:to-green-700 hover:scale-[1.02]"
                         >
                             ✏️ Edit Profile
                         </button>
@@ -182,7 +208,7 @@ const ProfilePage = ({ onNavigate }) => {
                     // Edit Mode
                     <div className="max-w-4xl mx-auto space-y-8">
                         {/* Basic Information */}
-                        <section className="bg-white rounded-3xl shadow-xl p-10">
+                        <section className="bg-white rounded-3xl shadow-xl p-10 border border-emerald-100">
                             <h3 className="text-2xl font-bold mb-6 text-gray-900">📝 Basic Information</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
@@ -192,7 +218,17 @@ const ProfilePage = ({ onNavigate }) => {
                                         name="name"
                                         value={editData.name}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={editData.email}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                     />
                                 </div>
                                 <div>
@@ -202,7 +238,7 @@ const ProfilePage = ({ onNavigate }) => {
                                         name="rollNo"
                                         value={editData.rollNo}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                     />
                                 </div>
                                 <div>
@@ -212,7 +248,7 @@ const ProfilePage = ({ onNavigate }) => {
                                         name="cnic"
                                         value={editData.cnic}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                     />
                                 </div>
                                 <div>
@@ -222,17 +258,17 @@ const ProfilePage = ({ onNavigate }) => {
                                         name="university"
                                         value={editData.university}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                     />
                                 </div>
-                                <div className="md:col-span-2">
+                                <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Degree</label>
                                     <input
                                         type="text"
                                         name="degree"
                                         value={editData.degree}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                     />
                                 </div>
                             </div>
@@ -362,7 +398,7 @@ const ProfilePage = ({ onNavigate }) => {
                         {/* Job Preferences */}
                         <section className="bg-white rounded-3xl shadow-xl p-10">
                             <h3 className="text-2xl font-bold mb-6 text-gray-900">💼 Job Preferences</h3>
-                            
+
                             <div className="mb-8">
                                 <h4 className="text-lg font-semibold text-gray-800 mb-4">Work Location</h4>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

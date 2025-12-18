@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const StatCard = ({ icon, title, value, color, bgColor }) => (
     <div className={`${bgColor} p-6 rounded-2xl shadow-md border border-gray-100 hover:shadow-lg transition`}>
@@ -13,11 +13,46 @@ const StatCard = ({ icon, title, value, color, bgColor }) => (
 );
 
 const Dashboard = () => {
+    const [statsData, setStatsData] = useState({
+        totalStudents: 0,
+        pending: 0,
+        forwarded: 0,
+        rejected: 0
+    });
+    const [activities, setActivities] = useState([]);
+
+    useEffect(() => {
+        const students = JSON.parse(localStorage.getItem("universityStudents") || "[]");
+        const requests = JSON.parse(localStorage.getItem("attestationRequests") || "[]");
+
+        const pending = requests.filter(r => r.status === "Pending University").length;
+        const forwarded = requests.filter(r => r.status === "Pending HEC" || r.status === "Verified").length;
+        const rejected = requests.filter(r => r.status.includes("Rejected")).length;
+
+        setStatsData({
+            totalStudents: students.length,
+            pending,
+            forwarded,
+            rejected
+        });
+
+        // Generate recent activities from requests (sorted newest first)
+        const recent = [...requests]
+            .sort((a, b) => b.id - a.id)
+            .slice(0, 5)
+            .map(req => ({
+                text: `Request from ${req.name} (${req.degree}): ${req.status}`,
+                time: req.date
+            }));
+        setActivities(recent);
+
+    }, []);
+
     const stats = [
-        { icon: "👥", title: "Total Students", value: 1250, color: "bg-blue-100 text-blue-600", bgColor: "bg-blue-50" },
-        { icon: "🎓", title: "Degrees Issued", value: 342, color: "bg-green-100 text-green-600", bgColor: "bg-green-50" },
-        { icon: "⏳", title: "Pending Attestations", value: 18, color: "bg-yellow-100 text-yellow-600", bgColor: "bg-yellow-50" },
-        { icon: "✅", title: "Blockchain Verified", value: 298, color: "bg-purple-100 text-purple-600", bgColor: "bg-purple-50" },
+        { icon: "👥", title: "Total Students", value: statsData.totalStudents, color: "bg-blue-100 text-blue-600", bgColor: "bg-blue-50" },
+        { icon: "⏳", title: "Pending Requests", value: statsData.pending, color: "bg-yellow-100 text-yellow-600", bgColor: "bg-yellow-50" },
+        { icon: "🚀", title: "Forwarded to HEC", value: statsData.forwarded, color: "bg-indigo-100 text-indigo-600", bgColor: "bg-indigo-50" },
+        { icon: "❌", title: "Rejected", value: statsData.rejected, color: "bg-red-100 text-red-600", bgColor: "bg-red-50" },
     ];
 
     return (
@@ -30,9 +65,13 @@ const Dashboard = () => {
             <div className="bg-white rounded-2xl shadow-md p-6">
                 <h3 className="text-xl font-bold mb-4 text-gray-900">Recent Activities</h3>
                 <div className="space-y-3">
-                    <ActivityItem text="New attestation request from BCS-F22-E02" time="5 mins ago" />
-                    <ActivityItem text="Degree issued to Nayyab Gull" time="1 hour ago" />
-                    <ActivityItem text="HEC attestation completed for 3 students" time="3 hours ago" />
+                    {activities.length === 0 ? (
+                        <p className="text-gray-500 text-sm">No recent activity.</p>
+                    ) : (
+                        activities.map((activity, index) => (
+                            <ActivityItem key={index} text={activity.text} time={activity.time} />
+                        ))
+                    )}
                 </div>
             </div>
         </div>

@@ -34,18 +34,18 @@ const VerificationModal = ({ isOpen, onClose, onVerify }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-emerald-100">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
+                <div className="bg-gradient-to-r from-emerald-600 to-green-600 text-white p-6 rounded-t-2xl">
                     <h2 className="text-2xl font-bold">🆔 CNIC Verification Required</h2>
-                    <p className="text-blue-100 text-sm mt-1">Verify your CNIC to view job recommendations</p>
+                    <p className="text-emerald-50 text-sm mt-1">Verify your CNIC to view job recommendations</p>
                 </div>
 
                 {/* Content */}
                 <div className="p-8 space-y-6">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <p className="text-sm text-blue-800">
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                        <p className="text-sm text-emerald-800">
                             To access job recommendations, please verify your CNIC. This helps us provide personalized opportunities matching your profile.
                         </p>
                     </div>
@@ -61,7 +61,7 @@ const VerificationModal = ({ isOpen, onClose, onVerify }) => {
                             }}
                             placeholder="e.g., 12345-1234567-1"
                             onKeyPress={(e) => e.key === "Enter" && handleVerify()}
-                            className={`w-full px-4 py-3 border ${errors ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                            className={`w-full px-4 py-3 border ${errors ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all`}
                         />
                         {errors && <p className="text-red-500 text-sm mt-2">{errors}</p>}
                     </div>
@@ -71,13 +71,13 @@ const VerificationModal = ({ isOpen, onClose, onVerify }) => {
                         <button
                             onClick={handleVerify}
                             disabled={isVerifying}
-                            className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-lg hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-1 px-4 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-lg hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed hover:from-emerald-700 hover:to-green-700"
                         >
                             {isVerifying ? "Verifying..." : "✅ Verify CNIC"}
                         </button>
                         <button
                             onClick={onClose}
-                            className="flex-1 px-4 py-3 bg-gray-400 text-white font-bold rounded-lg hover:bg-gray-500 transition"
+                            className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-bold rounded-lg hover:bg-gray-200 transition"
                         >
                             Cancel
                         </button>
@@ -113,28 +113,30 @@ const JobRecommendationsPage = ({ onNavigate }) => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-green-50">
-            <StudentNavbar activeSection="jobs" onNavigate={onNavigate} />
+        <div className="min-h-screen bg-gradient-to-br from-white via-emerald-50 to-green-50">
+            <div className="container mx-auto px-4 pt-6">
+                <StudentNavbar activeSection="jobs" onNavigate={onNavigate} />
+            </div>
 
             <div className="container mx-auto px-4 py-8">
                 <div className="mb-8">
                     <h1 className="text-4xl font-bold text-gray-900 mb-2">💼 Job Recommendations</h1>
                     <p className="text-gray-600">View AI-powered job recommendations tailored for you</p>
                     {isVerified && (
-                        <p className="text-sm text-green-600 mt-2">✅ Verified with CNIC: {verifiedCnic}</p>
+                        <p className="text-sm text-emerald-600 mt-2">✅ Verified with CNIC: {verifiedCnic}</p>
                     )}
                 </div>
 
                 {isVerified ? (
                     <JobRecommendations jobs={jobs} />
                 ) : (
-                    <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-12 text-center">
+                    <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-12 text-center border border-emerald-50">
                         <div className="text-6xl mb-4">🔒</div>
                         <h2 className="text-2xl font-bold text-gray-900 mb-3">Verification Required</h2>
                         <p className="text-gray-600 mb-8">Verify your CNIC to access job recommendations</p>
                         <button
                             onClick={() => setShowVerification(true)}
-                            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-lg hover:shadow-lg transition"
+                            className="px-8 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-lg hover:shadow-lg transition hover:from-emerald-700 hover:to-green-700"
                         >
                             🆔 Verify My CNIC
                         </button>

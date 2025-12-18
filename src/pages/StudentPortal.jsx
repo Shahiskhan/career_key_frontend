@@ -1,6 +1,6 @@
 
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import StudentNavbar from "../components/studentportal/StudentNavbar";
 import StudentHero from "../components/studentportal/StudentHero";
 import DashboardStats from "../components/studentportal/DashboardStats";
@@ -12,19 +12,50 @@ import ProfilePage from "./ProfilePage";
 const StudentPortal = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
 
-    // Mock data
-    const stats = { documents: 5, verified: 3, pending: 2, jobs: 12 };
+    // Load initial data from localStorage or use defaults
+    const storedName = localStorage.getItem("studentName");
+    const storedRollNo = localStorage.getItem("studentRollNo");
+    const storedCnic = localStorage.getItem("studentCnic");
+    const storedUniversity = localStorage.getItem("studentUniversity");
+    const storedDegree = localStorage.getItem("studentDegree");
+
+    const [stats, setStats] = useState({ documents: 0, verified: 0, pending: 0, jobs: 12 });
+    const [documents, setDocuments] = useState([]);
+
+    useEffect(() => {
+        // Fetch requests from localStorage
+        const allRequests = JSON.parse(localStorage.getItem("attestationRequests") || "[]");
+        const currentEmail = localStorage.getItem("studentEmail");
+
+        // Filter requests for the current student only
+        const requests = allRequests.filter(req => req.studentEmail === currentEmail);
+
+        // Calculate stats
+        const totalDocs = requests.length;
+        const verifiedDocs = requests.filter(req => req.status === "Verified").length;
+        const pendingDocs = requests.filter(req => req.status !== "Verified" && req.status !== "Rejected" && req.status !== "Rejected by HEC").length;
+
+        setStats(prev => ({ ...prev, documents: totalDocs, verified: verifiedDocs, pending: pendingDocs }));
+
+        // Map requests to document format
+        const docsList = requests.map(req => ({
+            name: req.degree || "Degree Certificate",
+            status: req.status === "Verified" ? "Verified" :
+                req.status.includes("Rejected") ? "Rejected" : "Pending",
+            date: req.date,
+            hash: req.txHash || null, // Assuming txHash might be added later
+            details: req // Pass full details if needed
+        }));
+        setDocuments(docsList);
+    }, [activeSection]); // Re-run when switching sections to refresh data
+
     const profile = {
-        name: "Muhammad Shahis",
-        rollNo: "BCS-F22-E02",
-        cnic: "12345-1234567-1",
-        university: "University of Mianwali",
-        degree: "BS Computer Science"
+        name: storedName || "Muhammad Shahis",
+        rollNo: storedRollNo || "",
+        cnic: storedCnic || "",
+        university: storedUniversity || "",
+        degree: storedDegree || ""
     };
-    const documents = [
-        { name: "Degree Certificate", status: "Verified", date: "2025-01-15", hash: "QmHash123abc..." },
-        { name: "Transcript", status: "Pending", date: "2025-01-20", hash: null },
-    ];
 
     const handleNavigate = (section) => {
         setActiveSection(section);
@@ -45,10 +76,14 @@ const StudentPortal = () => {
 
     // Default dashboard view
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-green-50">
-            <StudentNavbar activeSection={activeSection} onNavigate={handleNavigate} />
+        <div className="min-h-screen bg-gradient-to-br from-white via-emerald-50 to-green-50">
+            <div className="sticky top-0 z-50 pb-2 bg-gradient-to-br from-white/90 via-emerald-50/90 to-green-50/90 backdrop-blur-sm transition-all shadow-sm">
+                <div className="container mx-auto px-4 pt-4">
+                    <StudentNavbar activeSection={activeSection} onNavigate={handleNavigate} />
+                </div>
+            </div>
 
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto px-4 py-8 mt-4">
                 <div id="dashboard">
                     <StudentHero studentName={profile.name} />
                     <DashboardStats stats={stats} />

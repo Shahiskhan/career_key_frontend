@@ -1,16 +1,16 @@
 import React from "react";
 
-const StepCard = ({ number, title, desc, isLast }) => (
-    <div className="flex flex-col items-center">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg mb-4">
-            {number}
+const StepCard = ({ step, title, description }) => (
+    <div className="flex flex-col items-center text-center group">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-r from-emerald-600 to-green-600 flex items-center justify-center text-white font-bold text-2xl mb-6 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
+            {step}
         </div>
-        <div className="text-center">
-            <h5 className="font-bold text-lg mb-2">{title}</h5>
-            <p className="text-gray-600 text-sm">{desc}</p>
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border border-emerald-100 hover:border-emerald-300 transition-all duration-300 hover:shadow-lg">
+            <h3 className="font-bold text-xl mb-3 text-emerald-700">{title}</h3>
+            <p className="text-gray-600 leading-relaxed">{description}</p>
         </div>
-        {!isLast && <div className="hidden md:block h-0.5 w-full bg-gradient-to-r from-blue-200 to-indigo-200 mt-8"></div>}
     </div>
 );
 
 export default StepCard;
+

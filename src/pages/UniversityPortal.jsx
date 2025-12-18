@@ -26,11 +26,19 @@ const UniversityPortal = () => {
     };
 
     return (
-        <div className="flex h-screen overflow-hidden bg-gray-50">
+        <div className="flex h-screen overflow-hidden bg-gradient-to-br from-white via-emerald-50 to-green-50">
+            {/* Sidebar stays fixed on the left */}
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-            <div className="flex-1 flex flex-col overflow-auto">
+
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col h-screen">
+                {/* Header stays fixed at the top */}
                 <Header title={activeTab.replace("-", " ").toUpperCase()} universityName="University of Mianwali" />
-                <main className="p-8">{renderContent()}</main>
+
+                {/* Scrollable Content */}
+                <div className="flex-1 overflow-auto p-8 relative">
+                    {renderContent()}
+                </div>
             </div>
         </div>
     );

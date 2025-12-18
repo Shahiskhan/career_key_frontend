@@ -10,8 +10,8 @@ const RoleSelector = ({ selectedRole, setSelectedRole }) => {
                     key={role}
                     onClick={() => setSelectedRole(role)}
                     className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${selectedRole === role
-                            ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
-                            : "bg-white border-gray-300 text-gray-700 hover:bg-gray-100"
+                        ? "bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-md border-transparent"
+                        : "bg-white border-gray-300 text-gray-700 hover:bg-emerald-50 hover:border-emerald-200"
                         }`}
                 >
                     {role}
