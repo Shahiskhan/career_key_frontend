@@ -6,6 +6,7 @@ const RequestStatus = () => {
     const [filteredRequests, setFilteredRequests] = useState([]);
     const [activeFilter, setActiveFilter] = useState("All");
     const [selectedRequest, setSelectedRequest] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         // Load all requests from localStorage
@@ -15,18 +16,30 @@ const RequestStatus = () => {
     }, []);
 
     useEffect(() => {
-        if (activeFilter === "All") {
-            setFilteredRequests(allRequests);
-        } else if (activeFilter === "Pending") {
-            setFilteredRequests(allRequests.filter(req => req.status === "Pending HEC"));
+        let filtered = allRequests;
+
+        // Apply Status Filter
+        if (activeFilter === "Pending") {
+            filtered = filtered.filter(req => req.status === "Pending HEC");
         } else if (activeFilter === "In Progress") {
-            setFilteredRequests(allRequests.filter(req => req.status === "In Progress"));
+            filtered = filtered.filter(req => req.status === "In Progress");
         } else if (activeFilter === "Completed") {
-            setFilteredRequests(allRequests.filter(req => req.status === "Verified"));
+            filtered = filtered.filter(req => req.status === "Verified" || req.status === "Completed");
         } else if (activeFilter === "Rejected") {
-            setFilteredRequests(allRequests.filter(req => req.status === "Rejected by HEC"));
+            filtered = filtered.filter(req => req.status === "Rejected by HEC");
         }
-    }, [activeFilter, allRequests]);
+
+        // Apply Search Filter (University or Roll No)
+        if (searchTerm.trim() !== "") {
+            const term = searchTerm.toLowerCase();
+            filtered = filtered.filter(req =>
+                (req.university && req.university.toLowerCase().includes(term)) ||
+                (req.rollNo && req.rollNo.toLowerCase().includes(term))
+            );
+        }
+
+        setFilteredRequests(filtered);
+    }, [activeFilter, allRequests, searchTerm]);
 
     const updateRequestStatus = (id, newStatus, remarks) => {
         const updatedAll = allRequests.map(req =>
@@ -56,18 +69,34 @@ const RequestStatus = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <h2 className="font-bold text-2xl text-gray-900 border-l-4 border-emerald-500 pl-4">Request Status</h2>
+            <div className="flex flex-col gap-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <h2 className="font-bold text-2xl text-gray-900 border-l-4 border-emerald-500 pl-4">Request Status</h2>
+
+                    {/* Search Bar */}
+                    <div className="relative w-full md:w-96">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500">
+                            🔍
+                        </span>
+                        <input
+                            type="text"
+                            placeholder="Search by University or Roll No..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pl-12 pr-4 py-3 bg-white border border-emerald-100 rounded-2xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-gray-400"
+                        />
+                    </div>
+                </div>
 
                 {/* Filter Buttons */}
-                <div className="flex flex-wrap gap-2 bg-emerald-50 p-1.5 rounded-2xl shadow-sm border border-emerald-100">
+                <div className="flex flex-wrap gap-2 bg-emerald-50 p-1.5 rounded-2xl shadow-sm border border-emerald-100 self-start">
                     {filters.map(filter => (
                         <button
                             key={filter}
                             onClick={() => setActiveFilter(filter)}
-                            className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${activeFilter === filter
-                                    ? "bg-emerald-600 text-white shadow-md scale-105"
-                                    : "text-emerald-700 hover:bg-emerald-100"
+                            className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${activeFilter === filter
+                                ? "bg-emerald-600 text-white shadow-md scale-105"
+                                : "text-emerald-700 hover:bg-emerald-100"
                                 }`}
                         >
                             {filter}
@@ -80,7 +109,9 @@ const RequestStatus = () => {
                 {filteredRequests.length === 0 ? (
                     <div className="text-center py-20">
                         <div className="text-6xl mb-4">📂</div>
-                        <p className="text-gray-500 text-lg">No {activeFilter.toLowerCase()} requests found.</p>
+                        <p className="text-gray-500 text-lg">
+                            {searchTerm ? `No results found for "${searchTerm}"` : `No ${activeFilter.toLowerCase()} requests found.`}
+                        </p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
@@ -89,6 +120,7 @@ const RequestStatus = () => {
                                 <tr>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-emerald-900 uppercase tracking-wider">Student Name</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-emerald-900 uppercase tracking-wider">Roll No</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-emerald-900 uppercase tracking-wider">University</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-emerald-900 uppercase tracking-wider">Degree</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-emerald-900 uppercase tracking-wider">Date</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-emerald-900 uppercase tracking-wider">Status</th>
@@ -102,14 +134,15 @@ const RequestStatus = () => {
                                             <div className="text-sm font-semibold text-gray-900">{req.name}</div>
                                             <div className="text-xs text-gray-500">{req.cnic}</div>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-600">{req.rollNo}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-600 font-mono">{req.rollNo}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-600">{req.university}</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-medium">{req.degree}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500">{req.date}</td>
                                         <td className="px-6 py-4">
                                             <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm ${req.status === "Verified" ? "bg-green-100 text-green-700" :
-                                                    req.status === "Pending HEC" ? "bg-amber-100 text-amber-700" :
-                                                        req.status === "Rejected by HEC" ? "bg-red-100 text-red-700" :
-                                                            "bg-blue-100 text-blue-700"
+                                                req.status === "Pending HEC" ? "bg-amber-100 text-amber-700" :
+                                                    req.status === "Rejected by HEC" ? "bg-red-100 text-red-700" :
+                                                        "bg-blue-100 text-blue-700"
                                                 }`}>
                                                 {req.status}
                                             </span>

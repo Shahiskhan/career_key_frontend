@@ -1,4 +1,5 @@
 import React from "react";
+import degreeImage from "../../assets/images/buy-college-degree-from-the-riphah-international-university.jpg";
 
 const RequestDetailsModal = ({ request, onClose, onApprove, onReject }) => {
     if (!request) return null;
@@ -12,9 +13,9 @@ const RequestDetailsModal = ({ request, onClose, onApprove, onReject }) => {
             ></div>
 
             {/* Modal Content */}
-            <div className="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300">
+            <div className="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300">
                 {/* Header */}
-                <div className="px-8 py-6 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex justify-between items-center">
+                <div className="px-8 py-6 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex justify-between items-center shrink-0">
                     <div>
                         <h3 className="text-2xl font-bold">Document Verification</h3>
                         <p className="text-emerald-50 text-sm italic">Request ID: #{request.id}</p>
@@ -29,12 +30,12 @@ const RequestDetailsModal = ({ request, onClose, onApprove, onReject }) => {
 
                 {/* Body */}
                 <div className="flex-1 overflow-y-auto p-8">
-                    <div className="grid md:grid-cols-2 gap-8">
+                    <div className="grid lg:grid-cols-12 gap-8">
                         {/* Student Details Section */}
-                        <div className="space-y-6">
+                        <div className="lg:col-span-4 space-y-6">
                             <section>
                                 <h4 className="text-sm font-bold text-emerald-800 uppercase tracking-wider mb-4 border-b border-emerald-100 pb-2">Student Information</h4>
-                                <div className="grid grid-cols-1 gap-4">
+                                <div className="grid grid-cols-1 gap-4 bg-emerald-50/30 p-4 rounded-2xl">
                                     <DetailItem label="Full Name" value={request.name} />
                                     <DetailItem label="Roll Number" value={request.rollNo} />
                                     <DetailItem label="CNIC" value={request.cnic} />
@@ -46,58 +47,58 @@ const RequestDetailsModal = ({ request, onClose, onApprove, onReject }) => {
 
                             <section>
                                 <h4 className="text-sm font-bold text-emerald-800 uppercase tracking-wider mb-4 border-b border-emerald-100 pb-2">Application Status</h4>
-                                <div className="flex items-center gap-3">
-                                    <span className={`px-4 py-2 rounded-xl text-sm font-bold shadow-sm ${request.status === "Verified" ? "bg-green-100 text-green-700" :
-                                            request.status === "Pending HEC" ? "bg-amber-100 text-amber-700" :
-                                                request.status === "Rejected by HEC" ? "bg-red-100 text-red-700" :
-                                                    "bg-blue-100 text-blue-700"
-                                        }`}>
-                                        {request.status}
-                                    </span>
+                                <div className="bg-white border border-emerald-100 p-4 rounded-2xl shadow-sm">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <span className={`px-4 py-2 rounded-xl text-sm font-bold shadow-sm ${request.status === "Verified" ? "bg-green-100 text-green-700" :
+                                                request.status === "Pending HEC" ? "bg-amber-100 text-amber-700" :
+                                                    request.status === "Rejected by HEC" ? "bg-red-100 text-red-700" :
+                                                        "bg-blue-100 text-blue-700"
+                                            }`}>
+                                            {request.status}
+                                        </span>
+                                    </div>
                                     {request.remarks && (
-                                        <p className="text-xs text-gray-500 italic">"{request.remarks}"</p>
+                                        <div className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-100 italic text-xs text-gray-600">
+                                            "{request.remarks}"
+                                        </div>
                                     )}
                                 </div>
                             </section>
                         </div>
 
                         {/* Document View Section */}
-                        <div className="bg-gray-50 rounded-2xl border-2 border-dashed border-emerald-200 p-4 flex flex-col min-h-[400px]">
-                            <h4 className="text-sm font-bold text-emerald-800 uppercase tracking-wider mb-4 text-center">Document Preview</h4>
+                        <div className="lg:col-span-8 flex flex-col h-full">
+                            <h4 className="text-sm font-bold text-emerald-800 uppercase tracking-wider mb-4 border-b border-emerald-100 pb-2">Official Document Preview</h4>
 
-                            <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4">
-                                <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-3xl">
-                                    📄
-                                </div>
-                                <div>
-                                    <p className="font-semibold text-gray-700">{request.documentName || "Degree_Certificate.pdf"}</p>
-                                    <p className="text-xs text-gray-400">Blockchain Verified Hash: {request.txHash ? request.txHash.substring(0, 16) + "..." : "0x74a...8b2e"}</p>
+                            <div className="flex-1 bg-gray-900 rounded-2xl overflow-hidden shadow-inner flex flex-col relative group">
+                                {/* Action Overlay for Image */}
+                                <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <a
+                                        href={degreeImage}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="bg-white/90 backdrop-blur px-4 py-2 rounded-xl text-xs font-bold text-emerald-700 shadow-xl hover:bg-white transition"
+                                    >
+                                        🔍 Open Full Size
+                                    </a>
                                 </div>
 
-                                {/* Mock Document Preview */}
-                                <div className="w-full bg-white border rounded-lg p-6 shadow-inner mt-4">
-                                    <div className="border-4 border-emerald-600 p-4 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-600/5 rotate-45 transform translate-x-10 -translate-y-10"></div>
-                                        <div className="text-center mb-4">
-                                            <h5 className="text-lg font-serif font-bold text-gray-800">{request.university}</h5>
-                                            <p className="text-[10px] text-gray-500 uppercase">Degree Verification Document</p>
-                                        </div>
-                                        <div className="space-y-2 text-left">
-                                            <p className="text-[10px]"><span className="font-bold">STUDENT:</span> {request.name}</p>
-                                            <p className="text-[10px]"><span className="font-bold">DEGREE:</span> {request.degree}</p>
-                                            <p className="text-[10px]"><span className="font-bold">ROLL NO:</span> {request.rollNo}</p>
-                                        </div>
-                                        <div className="mt-6 flex justify-between items-end">
-                                            <div className="w-12 h-12 bg-gray-100 flex items-center justify-center text-[8px] text-gray-400 border border-dashed">QR Code</div>
-                                            <div className="text-right">
-                                                <p className="text-[8px] italic font-serif">Registrar Signature</p>
-                                                <div className="h-0.5 w-16 bg-gray-300 mt-1 ml-auto"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button className="w-full mt-4 py-2 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg hover:bg-emerald-100 transition">
-                                        ⬇ Download Original Document
-                                    </button>
+                                {/* Actual Image Display */}
+                                <div className="flex-1 overflow-auto bg-gray-800 flex items-center justify-center p-4">
+                                    <img
+                                        src={degreeImage}
+                                        alt="Degree Certificate"
+                                        className="max-w-full h-auto shadow-2xl rounded-sm transition-transform duration-500 hover:scale-[1.01]"
+                                    />
+                                </div>
+
+                                {/* Document Footer Info */}
+                                <div className="bg-emerald-900 text-emerald-100 px-6 py-3 flex justify-between items-center text-[10px] font-mono tracking-wider">
+                                    <span>MD5: {request.txHash ? request.txHash.substring(0, 16) : "B82F...E9D1"}</span>
+                                    <span className="flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                                        BLOCKCHAIN VERIFIED
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -105,7 +106,7 @@ const RequestDetailsModal = ({ request, onClose, onApprove, onReject }) => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="px-8 py-6 bg-gray-50 border-t flex justify-end gap-3">
+                <div className="px-8 py-6 bg-gray-50 border-t flex justify-end gap-3 shrink-0">
                     <button
                         onClick={onClose}
                         className="px-6 py-2.5 rounded-xl text-sm font-bold text-gray-600 hover:bg-gray-200 transition"
@@ -136,7 +137,7 @@ const RequestDetailsModal = ({ request, onClose, onApprove, onReject }) => {
 
 const DetailItem = ({ label, value }) => (
     <div className="flex flex-col">
-        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{label}</span>
+        <span className="text-[10px] font-bold text-emerald-600/50 uppercase tracking-widest leading-none mb-1">{label}</span>
         <span className="text-sm font-semibold text-gray-800">{value}</span>
     </div>
 );
