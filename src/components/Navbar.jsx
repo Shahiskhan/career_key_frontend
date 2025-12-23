@@ -1,10 +1,15 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.png";
+import { useAuth } from "../contexts/AuthContext";
+import { LogOut, User, LayoutDashboard } from "lucide-react";
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
+    const { user, isAuthenticated, logout } = useAuth();
+
     const isVerifierPortal = location.pathname === '/verifier-portal';
     const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
     const isSimplifiedNav = isVerifierPortal || isAuthPage;
@@ -16,6 +21,22 @@ const Navbar = () => {
     const closeMobileMenu = () => {
         setIsMobileMenuOpen(false);
     };
+
+    const handleLogout = async () => {
+        await logout();
+        closeMobileMenu();
+        navigate('/');
+    };
+
+    const getPortalLink = () => {
+        if (!user || !user.roles) return "/login";
+        const roles = user.roles;
+        if (roles.includes('ROLE_HEC') || roles.includes('HEC')) return "/hec-portal";
+        if (roles.includes('ROLE_UNIVERSITY') || roles.includes('UNIVERSITY')) return "/university-portal";
+        if (roles.includes('ROLE_STUDENT') || roles.includes('STUDENT')) return "/student-portal";
+        return "/login";
+    };
+
 
     return (
         <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-md border border-emerald-100 rounded-none sm:rounded-2xl">
@@ -51,12 +72,31 @@ const Navbar = () => {
                         </>
                     )}
 
-                    <Link
-                        to="/login"
-                        className="ml-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 text-white text-sm font-bold shadow-md hover:shadow-lg hover:from-emerald-700 hover:to-green-700 transition-all duration-300 hover:scale-105 transform"
-                    >
-                        PORTALS
-                    </Link>
+                    {isAuthenticated ? (
+                        <div className="flex items-center gap-4">
+                            <Link
+                                to={getPortalLink()}
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 text-emerald-700 text-sm font-bold border border-emerald-100 hover:bg-emerald-100 transition-all"
+                            >
+                                <LayoutDashboard className="w-4 h-4" />
+                                My Portal
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 text-red-600 text-sm font-bold border border-red-100 hover:bg-red-100 transition-all"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                Logout
+                            </button>
+                        </div>
+                    ) : (
+                        <Link
+                            to="/login"
+                            className="ml-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 text-white text-sm font-bold shadow-md hover:shadow-lg hover:from-emerald-700 hover:to-green-700 transition-all duration-300 hover:scale-105 transform"
+                        >
+                            PORTALS
+                        </Link>
+                    )}
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -92,8 +132,7 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             <div
-                className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                    }`}
+                className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
             >
                 <div className="px-4 pb-4 pt-2 space-y-3 bg-white/95 backdrop-blur-md border-t border-emerald-100">
                     <Link
@@ -132,13 +171,33 @@ const Navbar = () => {
                         </>
                     )}
 
-                    <Link
-                        to="/login"
-                        className="block px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 text-white text-sm font-bold shadow-md text-center hover:from-emerald-700 hover:to-green-700 transition-all duration-300"
-                        onClick={closeMobileMenu}
-                    >
-                        🚀 PORTALS
-                    </Link>
+                    {isAuthenticated ? (
+                        <>
+                            <Link
+                                to={getPortalLink()}
+                                className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
+                                onClick={closeMobileMenu}
+                            >
+                                <LayoutDashboard className="w-4 h-4" />
+                                My Portal
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center gap-3 w-full px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                Logout
+                            </button>
+                        </>
+                    ) : (
+                        <Link
+                            to="/login"
+                            className="block px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 text-white text-sm font-bold shadow-md text-center hover:from-emerald-700 hover:to-green-700 transition-all duration-300"
+                            onClick={closeMobileMenu}
+                        >
+                            🚀 PORTALS
+                        </Link>
+                    )}
                 </div>
             </div>
         </nav>
@@ -146,5 +205,6 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
 
 

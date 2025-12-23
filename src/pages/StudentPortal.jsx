@@ -8,24 +8,19 @@ import MyDocuments from "../components/studentportal/MyDocuments";
 import AttestationPage from "./AttestationPage";
 import JobRecommendationsPage from "./JobRecommendationsPage";
 import ProfilePage from "./ProfilePage";
+import { useAuth } from "../contexts/AuthContext";
 
 const StudentPortal = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
-
-    // Load initial data from localStorage or use defaults
-    const storedName = localStorage.getItem("studentName");
-    const storedRollNo = localStorage.getItem("studentRollNo");
-    const storedCnic = localStorage.getItem("studentCnic");
-    const storedUniversity = localStorage.getItem("studentUniversity");
-    const storedDegree = localStorage.getItem("studentDegree");
+    const { user } = useAuth();
 
     const [stats, setStats] = useState({ documents: 0, verified: 0, pending: 0, jobs: 12 });
     const [documents, setDocuments] = useState([]);
 
     useEffect(() => {
-        // Fetch requests from localStorage
+        // Fetch requests from localStorage - keeping this as is for now if it depends on local data
         const allRequests = JSON.parse(localStorage.getItem("attestationRequests") || "[]");
-        const currentEmail = localStorage.getItem("studentEmail");
+        const currentEmail = user?.email;
 
         // Filter requests for the current student only
         const requests = allRequests.filter(req => req.studentEmail === currentEmail);
@@ -43,25 +38,23 @@ const StudentPortal = () => {
             status: req.status === "Verified" ? "Verified" :
                 req.status.includes("Rejected") ? "Rejected" : "Pending",
             date: req.date,
-            hash: req.txHash || null, // Assuming txHash might be added later
-            details: req // Pass full details if needed
+            hash: req.txHash || null,
+            details: req
         }));
         setDocuments(docsList);
-    }, [activeSection]); // Re-run when switching sections to refresh data
+    }, [activeSection, user]);
 
     const profile = {
-        name: storedName || "Muhammad Shahis",
-        rollNo: storedRollNo || "",
-        cnic: storedCnic || "",
-        university: storedUniversity || "",
-        degree: storedDegree || ""
+        name: user?.name || "Student",
+        email: user?.email || "",
+        // Other fields like university, degree can be fetched from user.roles if roles are more complex 
+        // or from a separate student object if backend provides it in user
     };
 
     const handleNavigate = (section) => {
         setActiveSection(section);
     };
 
-    // Show different pages based on active section
     if (activeSection === 'attestation') {
         return <AttestationPage onNavigate={handleNavigate} />;
     }
@@ -74,7 +67,6 @@ const StudentPortal = () => {
         return <ProfilePage onNavigate={handleNavigate} />;
     }
 
-    // Default dashboard view
     return (
         <div className="min-h-screen bg-gradient-to-br from-white via-emerald-50 to-green-50">
             <div className="sticky top-0 z-50 pb-2 bg-gradient-to-br from-white/90 via-emerald-50/90 to-green-50/90 backdrop-blur-sm transition-all shadow-sm">
@@ -100,3 +92,4 @@ const StudentPortal = () => {
 };
 
 export default StudentPortal;
+
