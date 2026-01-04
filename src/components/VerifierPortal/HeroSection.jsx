@@ -9,7 +9,7 @@ const HeroSection = ({ onStartVerification }) => (
             Verify Documents <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Instantly</span>
         </h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-            Use the verifier portal to authenticate academic records using QR code, uploaded file, or student ID — powered by blockchain trust.
+            Use the verifier portal to authenticate academic records using QR scanning or Digital Degree ID — powered by blockchain trust.
         </p>
         <button
             onClick={onStartVerification}
